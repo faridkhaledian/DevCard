@@ -19,45 +19,35 @@ public class HomeController : Controller
     {
         return View();
     }
+    private void PopulateServices()
+    {
+        ViewBag.Services = new SelectList(_services, "Id", "Name");
+    }
 
     [HttpGet]
     public IActionResult Contact()
     {
-        var model = new Contact
-        {
-            Services = new SelectList(_services, "Id", "Name")
-
-        };
-
-
-       return View(model);
+        PopulateServices();
+        return View(new Contact());
     }
 
     [HttpPost]
     public IActionResult Contact(Contact model)
     {
-        model.Services = new SelectList(_services, "Id", "Name");
-        //if(ModelState.IsValid == false)
+
+        PopulateServices();
+
         if (!ModelState.IsValid)
         {
             ViewBag.error = "اطلاعات وارد شده صحیح نیست. لطفا دوباره تلاش کنید";
             return View(model);
         }
 
-        ModelState.Clear();
-
-        model = new Contact
-        {
-            Services = new SelectList(_services, "Id", "Name")
-        };
         ViewBag.success = "پیغام شما با موفقیت ارسال شد. باتشکر";
-        return View(model);
-        //return RedirectToAction("Index");
+        ModelState.Clear();
+        return View(new Contact());
+
     }
-
-
-
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
